@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".InboxActivity">
+    <item
+        android:id="@+id/action_logout"
+        android:title="Logout"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="300"
+        android:title="Search"
+        android:icon="@drawable/refresh"
+        app:showAsAction="ifRoom"
+        ></item>
+    <item
+        android:id="@+id/action_compose"
+        android:orderInCategory="200"
+        android:title="User"
+        android:icon="@drawable/newemail"
+        app:showAsAction="ifRoom"></item>
+</menu>
