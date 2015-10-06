@@ -64,6 +64,8 @@ public class MessageListAdpater extends ArrayAdapter<Message> {
         if(!msg.isLock()){
 
             ivLock.setImageResource(R.drawable.lock_open);
+        } else {
+            ivLock.setImageResource(R.drawable.lock);
         }
 
 
