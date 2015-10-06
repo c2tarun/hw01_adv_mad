@@ -1,6 +1,11 @@
 package com.kumar.estimote.homework01;
 
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +25,8 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText etEmail, etPassword;
     Button loginBtn, createBtn;
+    ProgressDialog pd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +43,9 @@ public class LoginActivity extends AppCompatActivity {
 //            startActivity(i);
 //            finish();
 //        }
-
-        if (ParseUser.getCurrentUser() != null) {
+        if (!isConnectedOnline()) {
+            Toast.makeText(LoginActivity.this, "Network/Bluetooth is missing.", Toast.LENGTH_SHORT).show();
+        } else if (ParseUser.getCurrentUser() != null) {
             Intent i = new Intent(LoginActivity.this, InboxActivity.class);
             startActivity(i);
             finish();
@@ -47,34 +55,45 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                pd = new ProgressDialog(LoginActivity.this);
+                pd.setCancelable(false);
+                pd.setMessage("Logging in...");
+                if (!isConnectedOnline()) {
+                    Toast.makeText(LoginActivity.this, "Network/Bluetooth is missing.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                pd.show();
+
                 if (etEmail.getText().toString().trim().isEmpty()
                         || etPassword.getText().toString().trim().isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Blank Field/s",
                             Toast.LENGTH_SHORT).show();
                 } else
-                ParseUser.logInInBackground(etEmail.getText().toString(),
-                        etPassword.getText().toString(),
-                        new LogInCallback() {
-                            public void done(ParseUser user,
-                                             ParseException e) {
-                                if (user != null) {
-                                    Toast.makeText(LoginActivity.this,
-                                           "Success Login",
-                                            Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(
-                                            LoginActivity.this,
-                                            InboxActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    Toast.makeText(LoginActivity.this,
-                                           "Invalid Login. Try Again",
-                                            Toast.LENGTH_SHORT).show();
+                    ParseUser.logInInBackground(etEmail.getText().toString(),
+                            etPassword.getText().toString(),
+                            new LogInCallback() {
+                                public void done(ParseUser user,
+                                                 ParseException e) {
+                                    if (user != null) {
+                                        Toast.makeText(LoginActivity.this,
+                                                "Success Login",
+                                                Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(
+                                                LoginActivity.this,
+                                                InboxActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(LoginActivity.this,
+                                                "Invalid Login. Try Again",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                    if (e != null)
+                                        e.printStackTrace();
+
+                                    pd.cancel();
                                 }
-                                if(e!=null)
-                                    e.printStackTrace();
-                            }
-                        });
+                            });
             }
         });
 
@@ -87,12 +106,9 @@ public class LoginActivity extends AppCompatActivity {
                         SignUpActivity.class);
                 startActivity(intent);
                 finish();
-           }
+            }
         });
     }
-
-
-
 
 
     @Override
@@ -115,5 +131,30 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isConnectedOnline() {
+        boolean isReady = true;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni != null && ni.isConnected()) {
+            isReady = true;
+        } else {
+            isReady = false;
+        }
+
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(LoginActivity.this, "Device not supported", Toast.LENGTH_SHORT).show();
+        } else {
+            if (!mBluetoothAdapter.isEnabled()) {
+                isReady = false;
+            } else {
+                isReady = true;
+            }
+        }
+
+        return isReady;
     }
 }

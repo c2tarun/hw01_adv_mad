@@ -1,5 +1,6 @@
 package com.kumar.estimote.homework01;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ public class SignUpActivity extends AppCompatActivity {
     EditText etFirstName, etLastName, etUserEmail, etPass, etPassConfirm;
     Button signUpBtn;
     ParseUser user;
+    ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,11 @@ public class SignUpActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+
+                pd = new ProgressDialog(SignUpActivity.this);
+                pd.setMessage("Signing up");
+                pd.setCancelable(false);
+                pd.show();
                 if (etFirstName.getText().toString().trim().isEmpty()
                         || etLastName.getText().toString().trim().isEmpty()
                         || etUserEmail.getText().toString().trim().isEmpty()
@@ -81,7 +88,7 @@ public class SignUpActivity extends AppCompatActivity {
                             Toast.makeText(SignUpActivity.this, "Sign Up Error",
                                     Toast.LENGTH_SHORT).show();
                         }
-
+                        pd.cancel();
                     }
                 });
             }

@@ -72,7 +72,7 @@ public class MessageListAdpater extends ArrayAdapter<Message> {
 
         TextView tvDate = (TextView) convertView
                 .findViewById(R.id.tvDate);
-        tvDate.setText("11/8/14, 4:55pm");
+        tvDate.setText(msg.getDate());
 
 
 

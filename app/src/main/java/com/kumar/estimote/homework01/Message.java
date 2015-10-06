@@ -6,8 +6,9 @@ import java.io.Serializable;
  * Created by vinodkumar on 10/4/2015.
  */
 public class Message implements Serializable {
-    String sender,receiver,message;
+    String sender, receiver, message;
     String senderName;
+    String date;
 
     public String getObjectId() {
         return objectId;
@@ -35,7 +36,7 @@ public class Message implements Serializable {
 //        this.receiverName = receiverName;
 //    }
 
-    boolean isRead,isLock =true;
+    boolean isRead, isLock = true;
 
     public boolean isLock() {
         return isLock;
@@ -95,5 +96,13 @@ public class Message implements Serializable {
 
     public void setIsRead(boolean isRead) {
         this.isRead = isRead;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
