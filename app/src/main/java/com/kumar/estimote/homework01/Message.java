@@ -3,7 +3,7 @@ package com.kumar.estimote.homework01;
 import java.io.Serializable;
 
 /**
- * Created by vinodkumar on 10/4/2015.
+ * Created by tarun on 10/4/2015.
  */
 public class Message implements Serializable {
     String sender, receiver, message;

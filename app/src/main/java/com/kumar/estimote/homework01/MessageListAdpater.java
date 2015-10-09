@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by vinodkumar on 10/4/2015.
+ * Created by tarun on 10/4/2015.
  */
 public class MessageListAdpater extends ArrayAdapter<Message> {
     private int mResource;

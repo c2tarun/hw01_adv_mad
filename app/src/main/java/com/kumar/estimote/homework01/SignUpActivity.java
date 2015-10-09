@@ -11,9 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -34,9 +39,6 @@ public class SignUpActivity extends AppCompatActivity {
         etPass = (EditText) findViewById(R.id.editText4);
         etPassConfirm = (EditText) findViewById(R.id.editText5);
         signUpBtn = (Button) findViewById(R.id.btnSignUp);
-
-
-
 
         signUpBtn.setOnClickListener(new View.OnClickListener(){
 
@@ -81,6 +83,18 @@ public class SignUpActivity extends AppCompatActivity {
                             Intent intent = new Intent(SignUpActivity.this, InboxActivity.class);
                             startActivity(intent);
                             finish();
+                            Map<String, String> params = new HashMap<>();
+                            params.put("message", "New user " + user.getString("UserFullName") + " joined.");
+                            ParseCloud.callFunctionInBackground("pushToAll", params, new FunctionCallback<Object>() {
+                                @Override
+                                public void done(Object o, ParseException e) {
+                                    if(e == null) {
+                                        Toast.makeText(SignUpActivity.this, "All existing users are notified.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
                             //					}
                         }else {
                             e.printStackTrace();

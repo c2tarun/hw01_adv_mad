@@ -16,9 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.FunctionCallback;
 import com.parse.LogInCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -33,6 +39,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Map<String , Object> params = new HashMap<>();
+        params.put("message", "testpush to tracy");
 
         etEmail = (EditText) findViewById(R.id.etUsername);
         etPassword = (EditText) findViewById(R.id.etPassword);
@@ -91,6 +100,8 @@ public class LoginActivity extends AppCompatActivity {
                                     if (e != null)
                                         e.printStackTrace();
 
+                                    ParseInstallation.getCurrentInstallation().put("user", user);
+                                    ParseInstallation.getCurrentInstallation().saveEventually();
                                     pd.cancel();
                                 }
                             });
@@ -144,16 +155,16 @@ public class LoginActivity extends AppCompatActivity {
             isReady = false;
         }
 
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(LoginActivity.this, "Device not supported", Toast.LENGTH_SHORT).show();
-        } else {
-            if (!mBluetoothAdapter.isEnabled()) {
-                isReady = false;
-            } else {
-                isReady = true;
-            }
-        }
+//        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        if (mBluetoothAdapter == null) {
+//            Toast.makeText(LoginActivity.this, "Device not supported", Toast.LENGTH_SHORT).show();
+//        } else {
+//            if (!mBluetoothAdapter.isEnabled()) {
+//                isReady = false;
+//            } else {
+//                isReady = true;
+//            }
+//        }
 
         return isReady;
     }

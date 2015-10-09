@@ -8,14 +8,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.FunctionCallback;
 import com.parse.GetCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReadmsgActivity extends AppCompatActivity {
 
@@ -57,10 +63,21 @@ public class ReadmsgActivity extends AppCompatActivity {
         updateQuery.getInBackground(deleteMesgId, new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                if(e==null){
-                    parseObject.put("isRead",true);
+                if (e == null) {
+                    parseObject.put("isRead", true);
                     parseObject.saveInBackground();
                 }
+            }
+        });
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", message.getSender());
+
+        params.put("message", "Message Read by: " + ParseUser.getCurrentUser().get("UserFullName"));
+
+        ParseCloud.callFunctionInBackground("pushToUserId", params, new FunctionCallback<Object>() {
+            @Override
+            public void done(Object o, ParseException e) {
             }
         });
 
