@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.parse.FunctionCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseCloud;
@@ -29,9 +32,12 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = LoginActivity.class.getSimpleName();
     EditText etEmail, etPassword;
     Button loginBtn, createBtn;
     ProgressDialog pd;
+    MyApplication application;
+    Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +46,13 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Map<String , Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("message", "testpush to tracy");
 
         etEmail = (EditText) findViewById(R.id.etUsername);
         etPassword = (EditText) findViewById(R.id.etPassword);
         loginBtn = (Button) findViewById(R.id.btnLogin);
         createBtn = (Button) findViewById(R.id.btnNewUser);
-//        if (ParseUser.getCurrentUser() != null) {
-//            Intent i = new Intent(LoginActivity.this, AppsActivity.class);
-//            startActivity(i);
-//            finish();
-//        }
         if (!isConnectedOnline()) {
             Toast.makeText(LoginActivity.this, "Network/Bluetooth is missing.", Toast.LENGTH_SHORT).show();
         } else if (ParseUser.getCurrentUser() != null) {
@@ -119,8 +120,10 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
-    }
 
+        application = (MyApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -155,17 +158,14 @@ public class LoginActivity extends AppCompatActivity {
             isReady = false;
         }
 
-//        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//        if (mBluetoothAdapter == null) {
-//            Toast.makeText(LoginActivity.this, "Device not supported", Toast.LENGTH_SHORT).show();
-//        } else {
-//            if (!mBluetoothAdapter.isEnabled()) {
-//                isReady = false;
-//            } else {
-//                isReady = true;
-//            }
-//        }
-
         return isReady;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: " + "Login Screen");
+        mTracker.setScreenName("Activity~" + "Login Screen");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.parse.FindCallback;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
@@ -31,6 +34,7 @@ import java.util.Map;
 
 public class ComposeAcitivity extends AppCompatActivity {
 
+    private static final String TAG = ComposeAcitivity.class.getSimpleName();
     TextView tvPerson, tvRegion;
     EditText etMessage;
     ImageView ivPerson, ivRegion;
@@ -42,6 +46,8 @@ public class ComposeAcitivity extends AppCompatActivity {
     String replyUseremailId = "";
     String replyUserFullName = "";
     int region = 0;
+    MyApplication application;
+    Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,8 +210,17 @@ public class ComposeAcitivity extends AppCompatActivity {
 
             }
         });
+        application = (MyApplication) getApplication();
+        mTracker = application.getDefaultTracker();
 
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: " + "Login Screen");
+        mTracker.setScreenName("Activity~" + "Login Screen");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
 }

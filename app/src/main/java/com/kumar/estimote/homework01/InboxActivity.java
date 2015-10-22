@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InboxActivity extends AppCompatActivity {
+    private static final String TAG = InboxActivity.class.getSimpleName();
     ArrayList<Message> alMessage;
     ListView llView;
     ArrayAdapter<Message> arrayAdapter;
@@ -43,6 +46,8 @@ public class InboxActivity extends AppCompatActivity {
     //private Handler mHandler = new Handler();
     int tempRegion = 0;
     int count = 0;
+    MyApplication application;
+    Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +139,8 @@ public class InboxActivity extends AppCompatActivity {
         region = new Region("Global region",
                 "B9407F30-F5F8-466E-AFF9-25556B57FE6D", null, null);
 
-
+        application = (MyApplication) getApplication();
+        mTracker = application.getDefaultTracker();
     }
 
     public class DoBringDetails extends
@@ -195,6 +201,10 @@ public class InboxActivity extends AppCompatActivity {
                 }
             }
         });
+
+        Log.i(TAG, "Setting screen name: " + "Login Screen");
+        mTracker.setScreenName("Activity~" + "Login Screen");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
 
@@ -291,4 +301,5 @@ public class InboxActivity extends AppCompatActivity {
         }
         return 0;
     }
+
 }

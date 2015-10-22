@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
@@ -22,10 +24,13 @@ import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    private static final String TAG = SignUpActivity.class.getSimpleName();
     EditText etFirstName, etLastName, etUserEmail, etPass, etPassConfirm;
     Button signUpBtn;
     ParseUser user;
     ProgressDialog pd;
+    MyApplication application;
+    Tracker mTracker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +112,16 @@ public class SignUpActivity extends AppCompatActivity {
                 });
             }
         });
+        application = (MyApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: " + "Login Screen");
+        mTracker.setScreenName("Activity~" + "Login Screen");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
     }
 

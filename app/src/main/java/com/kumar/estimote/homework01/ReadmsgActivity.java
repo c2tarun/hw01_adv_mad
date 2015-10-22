@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.parse.FindCallback;
 import com.parse.FunctionCallback;
 import com.parse.GetCallback;
@@ -25,6 +27,7 @@ import java.util.Map;
 
 public class ReadmsgActivity extends AppCompatActivity {
 
+    private static final String TAG = ReadmsgActivity.class.getSimpleName();
     TextView tvFrom,tvRegion;
     //EditText etMessage;
     TextView tvMessage;
@@ -32,6 +35,8 @@ public class ReadmsgActivity extends AppCompatActivity {
 
     int region;
     String deleteMesgId;
+    MyApplication application;
+    Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +85,8 @@ public class ReadmsgActivity extends AppCompatActivity {
             public void done(Object o, ParseException e) {
             }
         });
-
+        application = (MyApplication) getApplication();
+        mTracker = application.getDefaultTracker();
 
     }
     @Override
@@ -134,6 +140,14 @@ public class ReadmsgActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: " + "Login Screen");
+        mTracker.setScreenName("Activity~" + "Login Screen");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }
 
